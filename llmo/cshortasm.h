@@ -1,0 +1,126 @@
+#ifndef CSHORTASM_H
+#define CSHORTASM_H
+
+#include <string>
+#include <map>
+#include "sys/mman.h"
+
+typedef unsigned char byte;
+typedef unsigned int uint;
+typedef unsigned short ushort;
+
+typedef enum r86{
+    EAX = 0,
+    ECX,
+    EDX,
+    EBX,
+    ESP,
+    EBP,
+    ESI,
+    EDI
+} r86;
+
+template <typename T>
+union byteValue{
+    T value;
+    byte bytes[sizeof( T )];
+};
+
+class CShortAsm
+{
+public:
+    CShortAsm(uint pages = 1);
+    ~CShortAsm();
+
+    void insert(const byte* array, uint size);
+    void push(byte value);
+    void push(int value);
+    void push(r86 r);
+    void pushad();
+    void pushfd();
+    void pop(r86 r);
+    void popad();
+    void popfd();
+    void label(const std::string& label);
+    void jmp(int addr);
+    void jmp(const std::string& label);
+    void jmp(r86 r);
+    void ret(int pops = 0);
+    void nop();
+    void call(int addr);
+    void call(const std::string& label);
+    void call(r86 r);
+    void mov(int &var, r86 r); // mov var, EAX
+    void mov(r86 r, int &var); // mov EAX, var
+    void mov(r86 r, const int value); // mov EAX, value
+    void mov(r86 r1, r86 r2, byte offset); // mov EAX, [EAX + 4]
+    void mov(r86 r1, byte offset, r86 r2); // mov [EAX + 4], EAX
+    void xchg(r86 r1, r86 r2, byte offset = 0); // swap registers
+    void xchg(r86 r, int &var);
+    void add(r86 r, byte value);
+    void add(r86 r, const int value);
+    void add(r86 r, int &var);
+    void sub(r86 r, byte value);
+    void sub(r86 r, const int value);
+    void sub(r86 r, int &var);
+    void mul(r86 r);
+    void imul(r86 r);
+    void imul(r86 r1, r86 r2);
+    void imul(r86 r, byte value);
+    void imul(r86 r, const int value);
+    void imul(r86 r1, r86 r2, byte value);
+    void imul(r86 r1, r86 r2, const int value);
+    void div(r86 r);
+    void idiv(r86 r);
+    void cmp(r86 r1, r86 r2);
+    void cmp(r86 r, byte value);
+    void cmp(r86 r, const int value);
+    void XOR(r86 r1, r86 r2);
+    void XOR(r86 r, byte value);
+    void XOR(r86 r, const int value);
+    void je(const int addr);
+    void je(const std::string& label);
+    void jne(const int addr);
+    void jne(const std::string& label);
+    void jl(const int addr);
+    void jl(const std::string& label);
+    void jle(const int addr);
+    void jle(const std::string& label);
+    void jg(const int addr);
+    void jg(const std::string& label);
+    void jge(const int addr);
+    void jge(const std::string& label);
+    void jb(const int addr);
+    void jb(const std::string& label);
+    void jbe(const int addr);
+    void jbe(const std::string& label);
+    void ja(const int addr);
+    void ja(const std::string& label);
+    void jae(const int addr);
+    void jae(const std::string& label);
+
+    void resetWriteOffset();
+    uint getWriteOffset();
+    void setWriteOffset(uint offset);
+
+    const byte* getAddr();
+    uint getSize();
+
+    static uint arrayToPages(size_t size_array);
+    static const uint PAGE_SIZE = 4096;
+
+protected:
+    void resize(uint pages);
+    uint getRelativeAddress(uint addr);
+    void write(byte v);
+
+    byte* _code = nullptr;
+    unsigned int _size = 0;
+
+private:
+    unsigned int _offset = 0;
+    unsigned int _peak = 0;
+    std::map<std::string, unsigned int> _labels;
+};
+
+#endif // CSHORTASM_H

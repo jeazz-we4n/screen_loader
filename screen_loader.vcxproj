@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+    <RootNamespace>screen_loader</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>screen_loader</TargetName>
+    <TargetExt>.asi</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>screen_loader</TargetName>
+    <TargetExt>.asi</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;$(ProjectDir)sys;$(ProjectDir)d3d9;$(ProjectDir)CGame;$(ProjectDir)llmo;$(DXSDK_DIR)Include;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;gdi32.lib;user32.lib;kernel32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)source;$(ProjectDir)sys;$(ProjectDir)d3d9;$(ProjectDir)CGame;$(ProjectDir)llmo;$(DXSDK_DIR)Include;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>d3d9.lib;d3dx9.lib;gdi32.lib;user32.lib;kernel32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x86;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\screen_loader.cpp" />
+    <ClCompile Include="source\loader.cpp" />
+    <ClCompile Include="llmo\ccallhook.cpp" />
+    <ClCompile Include="llmo\memsafe.cpp" />
+    <ClCompile Include="llmo\cshortasm.cpp" />
+    <ClCompile Include="sys\mman.c" />
+    <ClCompile Include="d3d9\proxydirectx.cpp" />
+    <ClCompile Include="d3d9\directx.cpp" />
+    <ClCompile Include="d3d9\color.cpp" />
+    <ClCompile Include="d3d9\d3drender.cpp" />
+    <ClCompile Include="d3d9\texture.cpp" />
+    <ClCompile Include="d3d9\MenuManager\ContextMenu.cpp" />
+    <ClCompile Include="d3d9\MenuManager\Listing.cpp" />
+    <ClCompile Include="d3d9\MenuManager\Menu.cpp" />
+    <ClCompile Include="d3d9\MenuManager\Node.cpp" />
+    <ClCompile Include="d3d9\MenuManager\NodeMenu.cpp" />
+    <ClCompile Include="d3d9\MenuManager\Text.cpp" />
+    <ClCompile Include="d3d9\MenuManager\VerticalLayout.cpp" />
+    <ClCompile Include="d3d9\MenuManager\CSlider.cpp" />
+    <ClCompile Include="CGame\CPed.cpp" />
+    <ClCompile Include="CGame\CPhysical.cpp" />
+    <ClCompile Include="CGame\Types.cpp" />
+    <ClCompile Include="CGame\methods.cpp" />
+    <ClCompile Include="CGame\CCam.cpp" />
+    <ClCompile Include="CGame\CCamera.cpp" />
+    <ClCompile Include="CGame\CVehicle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\screen_loader.h" />
+    <ClInclude Include="source\loader.h" />
+    <ClInclude Include="llmo\ccallhook.h" />
+    <ClInclude Include="llmo\memsafe.h" />
+    <ClInclude Include="llmo\cshortasm.h" />
+    <ClInclude Include="sys\mman.h" />
+    <ClInclude Include="d3d9\proxydirectx.h" />
+    <ClInclude Include="d3d9\directx.h" />
+    <ClInclude Include="d3d9\color.h" />
+    <ClInclude Include="d3d9\d3drender.h" />
+    <ClInclude Include="d3d9\texture.h" />
+    <ClInclude Include="d3d9\MenuManager\ContextMenu.h" />
+    <ClInclude Include="d3d9\MenuManager\Listing.h" />
+    <ClInclude Include="d3d9\MenuManager\Menu.h" />
+    <ClInclude Include="d3d9\MenuManager\Node.h" />
+    <ClInclude Include="d3d9\MenuManager\NodeMenu.h" />
+    <ClInclude Include="d3d9\MenuManager\Text.h" />
+    <ClInclude Include="d3d9\MenuManager\VerticalLayout.h" />
+    <ClInclude Include="d3d9\MenuManager\CSlider.h" />
+    <ClInclude Include="CGame\Types.h" />
+    <ClInclude Include="CGame\CPlaceable.h" />
+    <ClInclude Include="CGame\CEntity.h" />
+    <ClInclude Include="CGame\CPhysical.h" />
+    <ClInclude Include="CGame\CObject.h" />
+    <ClInclude Include="CGame\CHAnimIFrame.h" />
+    <ClInclude Include="CGame\CBone.h" />
+    <ClInclude Include="CGame\CPedIK.h" />
+    <ClInclude Include="CGame\CParticleData.h" />
+    <ClInclude Include="CGame\CWeaponSlot.h" />
+    <ClInclude Include="CGame\CPed.h" />
+    <ClInclude Include="CGame\CVehicle.h" />
+    <ClInclude Include="CGame\methods.h" />
+    <ClInclude Include="CGame\CCam.h" />
+    <ClInclude Include="CGame\CCamera.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <Target Name="CopyCustomLoadScreen" AfterTargets="Build">
+    <Copy SourceFiles="$(ProjectDir)customloadscreen.png" DestinationFiles="$(OutDir)customloadscreen.png" SkipUnchangedFiles="true" Condition="Exists('$(ProjectDir)customloadscreen.png')" />
+  </Target>
+</Project>

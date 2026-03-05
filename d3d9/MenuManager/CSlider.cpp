@@ -1,0 +1,144 @@
+#include "CSlider.h"
+#include <cstdio>
+
+CSlider::CSlider(CNodeMenu* parent, POINT pos, unsigned int length, float start, float end, float value, CD3DFont *text) : CNodeMenu(parent, pos, text)
+{
+    _length = length;
+    _start = start;
+    _end = end;
+    _value = value;
+    float range = end - start;
+    float percent = (value - start) / (range / 100.0f);
+    float len = static_cast<float>(length) - static_cast<float>(length) / 25.0f;
+    _rollerX = static_cast<int>((percent / (100.0f / len)) + static_cast<float>(length) / 50.0f);
+
+    _roller = eCdRed;
+    _mat = eCdCyan;
+    _text = eCdWhite;
+    _moveRoller = false;
+    _description = "";
+    SetSelectable(false);
+
+    _init = false;
+}
+
+CSlider::~CSlider()
+{
+    g_class.DirectX->d3d9_ReleaseTexture(_texture);
+}
+
+bool CSlider::isInizialize()
+{
+    if ( _Init )
+        return true;
+
+    if ( g_class.DirectX->d3d9_device() == nullptr )
+        return false;
+
+    if ( !CNodeMenu::isInizialize() )
+        return false;
+
+    _texture = g_class.DirectX->d3d9_CreateTexture( _length, static_cast<int>(_length / 5.0f) );
+    _height = static_cast<int>(_font->DrawHeight());
+    char buf[32];
+    sprintf_s(buf, "%.2f", _value);
+    _width = static_cast<int>(_length + _font->DrawLength(buf));
+
+    _Init = true;
+    return true;
+}
+
+void CSlider::onDraw( int so_V, int so_H )
+{
+    if (!isInizialize())
+        return;
+
+    int posX = _pos.x - so_H;
+    int posY = _pos.y - so_V;
+
+    _texture->Begin();
+    _texture->Clear();
+
+    _draw->D3DBox(static_cast<float>(_length) / 50.0f, static_cast<float>(_length) / 20.0f, static_cast<float>(_length) - static_cast<float>(_length) / 25.0f, static_cast<float>(_length) / 10.0f, _mat);
+    _draw->D3DBox(static_cast<float>(_rollerX), 0.0f, static_cast<float>(_length) / 25.0f, static_cast<float>(_length) / 5.0f, _roller);
+    if (isMouseOnSlider(so_V, so_H) && _moveRoller){
+        int rollerX = _MP.x - posX;
+        float rollerStart = static_cast<float>(_length) / 50.0f;
+        float rollerLen = static_cast<float>(_length) - static_cast<float>(_length) / 25.0f;
+        if (rollerX >= static_cast<int>(rollerStart) && rollerX <= static_cast<int>(rollerStart + rollerLen)){
+            _rollerX = rollerX;
+            rollerX -= static_cast<int>(_length / 50.0f);
+            float len = static_cast<float>(_length) - static_cast<float>(_length) / 25.0f;
+            float percent = (100.0f / len) * static_cast<float>(rollerX);
+            float range = _end - _start;
+            _value = (range / 100.0f) * percent + _start;
+            if (_value < _start)
+                _value = _start;
+            if (_value > _end)
+                _value = _end;
+        }
+    }
+
+    _texture->End();
+    _texture->Render(posX, posY);
+    char buf[32];
+    sprintf_s(buf, "%.2f", _value);
+    _font->PrintShadow(static_cast<float>(posX + _length), static_cast<float>(posY), _text, buf);
+
+    CNodeMenu::onDraw( so_V, so_H );
+}
+
+bool CSlider::onEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    (void)hWnd;(void)wParam;(void)lParam;
+    if (uMsg == WM_LBUTTONDOWN){
+        _moveRoller = true;
+    } else if (uMsg == WM_LBUTTONUP){
+        _moveRoller = false;
+    }
+    return true;
+}
+
+void CSlider::setValue( float value )
+{
+    _value = value;
+    char buf[32];
+    sprintf_s(buf, "%.2f", _value);
+    _width = static_cast<int>(_length + _font->DrawLength(buf));
+}
+
+float CSlider::value()
+{
+    return _value;
+}
+
+void CSlider::setColors( SRColor mat, SRColor roller, SRColor text )
+{
+    if (mat.argb != 0)
+        _mat = mat;
+    if (roller.argb != 0)
+        _roller = roller;
+    if (text.argb != 0)
+        _text = text;
+}
+
+void CSlider::getColors( SRColor *mat, SRColor *roller, SRColor *text )
+{
+    if (mat != nullptr)
+        *mat = _mat;
+    if (roller != nullptr)
+        *roller = _roller;
+    if (text != nullptr)
+        *text = _text;
+}
+
+bool CSlider::isMouseOnSlider( int so_V, int so_H )
+{
+    POINT M = _MP;
+    int PX = (_pos.x - so_H) + static_cast<int>(static_cast<float>(_length) / 50.0f);
+    int PY = _pos.y - so_V;
+    int LEN = static_cast<int>(static_cast<float>(_length) - static_cast<float>(_length) / 25.0f) + 1;
+    if ( M.x >= PX && M.x <= PX + LEN && M.y > PY && M.y < PY + _height )
+        return true;
+    return false;
+}
