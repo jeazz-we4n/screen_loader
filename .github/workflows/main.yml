@@ -1,0 +1,16 @@
+name: Build
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Configure
+      run: cmake -B build -A Win32
+    - name: Build
+      run: cmake --build build --config Release
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: screen_loader
+        path: build/Release/
