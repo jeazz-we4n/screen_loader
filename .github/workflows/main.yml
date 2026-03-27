@@ -1,16 +1,33 @@
-name: Build
-on: [workflow_dispatch]
+name: Build ASI Plugin
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Configure
-      run: cmake -B build -A Win32
-    - name: Build
-      run: cmake --build build --config Release
-    - name: Upload
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build Solution
+      # GTA SA là game 32-bit, do đó Platform thường là 'Win32' hoặc 'x86'.
+      # Nếu build bị lỗi platform, hãy thử đổi 'Win32' thành 'x86'.
+      run: msbuild screen_loader.sln /p:Configuration=Release /p:Platform=Win32
+
+    - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: screen_loader
-        path: build/Release/
+        name: screen_loader-release
+        # Action này sẽ tìm tất cả các file .asi hoặc .dll vừa được build ra
+        # và đóng gói lại để bạn tải về.
+        path: |
+          **/*.asi
+          **/*.dll
