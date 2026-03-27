@@ -18,14 +18,30 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
 
-    - name: Download DirectX 9 SDK (Headers & Libs)
+    - name: Download DirectX 9 D3DX (Headers & Libs)
       run: nuget install Microsoft.DXSDK.D3DX -Version 9.29.952.8 -OutputDirectory dxsdk
 
+    - name: Inject DirectX Paths into Build
+      # Tạo file Directory.Build.props để bổ sung đường dẫn một cách an toàn
+      shell: pwsh
+      run: |
+        $props = @"
+        <Project>
+          <ItemDefinitionGroup>
+            <ClCompile>
+              <AdditionalIncludeDirectories>`$(MSBuildThisFileDirectory)dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+            </ClCompile>
+            <Link>
+              <AdditionalLibraryDirectories>`$(MSBuildThisFileDirectory)dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+            </Link>
+          </ItemDefinitionGroup>
+        </Project>
+        "@
+        Set-Content -Path Directory.Build.props -Value $props
+
     - name: Build Solution
-      # Ép GitHub Actions sử dụng Command Prompt cho bước này
-      shell: cmd
-      # Viết trên 1 dòng với dấu ngoặc kép bao quanh các tham số /p: để an toàn tuyệt đối
-      run: msbuild screen_loader.sln /p:Configuration=Release /p:Platform=Win32 /p:IncludePath="%GITHUB_WORKSPACE%\dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\include;$(IncludePath)" /p:LibraryPath="%GITHUB_WORKSPACE%\dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\lib\x86;$(LibraryPath)"
+      # Build gọn gàng, trả lại các cấu hình mặc định cho Windows SDK
+      run: msbuild screen_loader.sln /p:Configuration=Release /p:Platform=Win32
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
