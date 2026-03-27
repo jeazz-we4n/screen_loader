@@ -19,18 +19,13 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Download DirectX 9 SDK (Headers & Libs)
-      # Tải gói DirectX 9 SDK qua NuGet vào thư mục 'dxsdk'
       run: nuget install Microsoft.DXSDK.D3DX -Version 9.29.952.8 -OutputDirectory dxsdk
 
     - name: Build Solution
-      # Sử dụng ký hiệu > để viết lệnh dài trên nhiều dòng cho dễ nhìn
-      # Bổ sung tham số /p:IncludePath và /p:LibraryPath để trỏ vào thư mục DirectX vừa tải
-      run: >
-        msbuild screen_loader.sln 
-        /p:Configuration=Release 
-        /p:Platform=Win32 
-        /p:IncludePath="$env:GITHUB_WORKSPACE\dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\include;`$(IncludePath)" 
-        /p:LibraryPath="$env:GITHUB_WORKSPACE\dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\lib\x86;`$(LibraryPath)"
+      # Ép GitHub Actions sử dụng Command Prompt cho bước này
+      shell: cmd
+      # Viết trên 1 dòng với dấu ngoặc kép bao quanh các tham số /p: để an toàn tuyệt đối
+      run: msbuild screen_loader.sln /p:Configuration=Release /p:Platform=Win32 /p:IncludePath="%GITHUB_WORKSPACE%\dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\include;$(IncludePath)" /p:LibraryPath="%GITHUB_WORKSPACE%\dxsdk\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\lib\x86;$(LibraryPath)"
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
